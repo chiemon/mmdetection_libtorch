@@ -75,11 +75,10 @@ class SingleStageDetector(BaseDetector):
 
         loc = torch.cat([o.view(o.size(0), -1) for o in cls_all], 1)
         conf = torch.cat([o.view(o.size(0), -1) for o in bbox_all], 1)
-
-        output = torch.cat((conf.view(conf.size(0), -1, 4), loc.view(loc.size(0), -1, self.bbox_head.cls_out_channels)), 2)
-
-        print (output.shape)
-
+        output = torch.cat(
+            (conf.view(conf.size(0), -1, 4),
+             loc.view(loc.size(0), -1, self.bbox_head.cls_out_channels)), 2)
+        print(output.shape)
         return output
 
     def forward_train(self,

@@ -3,7 +3,6 @@ project(DetectorAPI LANGUAGES CXX C)
 
 SET(CMAKE_BUILD_TYPE "debug")
 
-
 # set cuda path
 set(LIB_PATH "/home/dl/3rdparty/")
 
@@ -16,7 +15,6 @@ find_package(Torch REQUIRED)
 
 set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/install")
 message("install prefix: ${CMAKE_INSTALL_PREFIX}")
-
 
 add_subdirectory(src)
 add_subdirectory(example)

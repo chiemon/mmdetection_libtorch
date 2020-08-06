@@ -309,15 +309,14 @@ class TwoStageDetector(BaseDetector, RPNTestMixin, BBoxTestMixin,
         loc = torch.cat([o.view(o.size(0), -1) for o in cls_all], 1)
         conf = torch.cat([o.view(o.size(0), -1) for o in bbox_all], 1)
 
-        output = torch.cat((conf.view(conf.size(0), -1, 4), loc.view(loc.size(0), -1, self.rpn_head.cls_out_channels)),2)
+        output = torch.cat(
+            (conf.view(conf.size(0), -1, 4),
+             loc.view(loc.size(0), -1, self.rpn_head.cls_out_channels)), 2)
         output = output.view(-1, 1)
         data = torch.cat([xx.view(-1, 1) for xx in x], 0)
         output = torch.cat([output, data], 0)
-        print (output.shape)
+        print(output.shape)
         return output
-
-
-
 
     def simple_test(self, img, img_metas, proposals=None, rescale=False):
         """Test without augmentation."""

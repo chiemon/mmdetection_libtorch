@@ -1,9 +1,11 @@
-#include "torch/torch.h"
 #include <ATen/ATen.h>
 #include <ATen/cuda/CUDAContext.h>
+
 #include <THC/THCAtomics.cuh>
 #include <iostream>
+
 #include "RoIAlign.hpp"
+#include "torch/torch.h"
 
 #define CUDA_1D_KERNEL_LOOP(i, n)                            \
   for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < n; \
@@ -119,12 +121,12 @@ __global__ void ROIAlignForwardV1(
   }
 }
 
-int ROIAlignForwardLaucher(const torch::Tensor features, const torch::Tensor rois,
-                           const float spatial_scale, const int sample_num,
-                           const int channels, const int height,
-                           const int width, const int num_rois,
-                           const int pooled_height, const int pooled_width,
-                           torch::Tensor output) {
+int ROIAlignForwardLaucher(const torch::Tensor features,
+                           const torch::Tensor rois, const float spatial_scale,
+                           const int sample_num, const int channels,
+                           const int height, const int width,
+                           const int num_rois, const int pooled_height,
+                           const int pooled_width, torch::Tensor output) {
   const int output_size = num_rois * pooled_height * pooled_width * channels;
   AT_DISPATCH_FLOATING_TYPES_AND_HALF(
       features.scalar_type(), "ROIAlignLaucherForward", ([&] {
@@ -134,12 +136,12 @@ int ROIAlignForwardLaucher(const torch::Tensor features, const torch::Tensor roi
 
         ROIAlignForwardV1<scalar_t>
             <<<GET_BLOCKS(output_size), THREADS_PER_BLOCK, 0,
-            at::cuda::getCurrentCUDAStream()>>>(
+               at::cuda::getCurrentCUDAStream()>>>(
                 output_size, bottom_data, rois_data, scalar_t(spatial_scale),
                 sample_num, channels, height, width, pooled_height,
                 pooled_width, top_data);
       }));
-  //std::cout<<cudaGetLastError()<<std::endl;
-  //THCudaCheck(cudaGetLastError());
+  // std::cout<<cudaGetLastError()<<std::endl;
+  // THCudaCheck(cudaGetLastError());
   return 1;
 }

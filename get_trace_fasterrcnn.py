@@ -1,23 +1,16 @@
 import argparse
-
 from mmcv import Config
-
 from mmdet.models import build_detector
-
 import torch
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
     parser.add_argument('config', help='train config file path')
-    parser.add_argument(
-        '--checkpoint', help='the checkpoint file to trace')
-    parser.add_argument(
-        '--tracedbone', help='the name of tracedpoint')
-    parser.add_argument(
-        '--tracedshared', help='the name of tracedpoint')
-    parser.add_argument(
-        '--tracedbbox', help='the name of tracedpoint')
+    parser.add_argument('--checkpoint', help='the checkpoint file to trace')
+    parser.add_argument('--tracedbone', help='the name of tracedpoint')
+    parser.add_argument('--tracedshared', help='the name of tracedpoint')
+    parser.add_argument('--tracedbbox', help='the name of tracedpoint')
     parser.add_argument(
         '--shape',
         type=int,
@@ -27,14 +20,13 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+
 def main():
-
     args = parse_args()
-
     if len(args.shape) == 1:
         input_shape = (1, 3, args.shape[0], args.shape[0])
     elif len(args.shape) == 2:
-        input_shape = (1, 3, ) + tuple(args.shape)
+        input_shape = (1, 3,) + tuple(args.shape)
     else:
         raise ValueError('invalid input shape')
 
@@ -64,9 +56,6 @@ def main():
 
     traced_bbox = torch.jit.trace(model.bbox_head, bbox_feats)
     traced_bbox.save(args.tracedbbox)
-
-
-
 
 
 if __name__ == '__main__':

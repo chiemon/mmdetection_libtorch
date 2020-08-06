@@ -1,20 +1,16 @@
 #include "RoIAlign.hpp"
 
-
 RoIAlign::RoIAlign(int out_size, float spatial_scale, int sample_num,
-                   bool use_torchvision, bool aligned)
-{
-   pooled_height_ = out_size;
-   pooled_width_ = out_size;
-   spatial_scale_ = spatial_scale;
-   sample_num_ = sample_num;
-   use_torchvision_ = use_torchvision;
-   aligned_ = aligned;
+                   bool use_torchvision, bool aligned) {
+  pooled_height_ = out_size;
+  pooled_width_ = out_size;
+  spatial_scale_ = spatial_scale;
+  sample_num_ = sample_num;
+  use_torchvision_ = use_torchvision;
+  aligned_ = aligned;
 }
 
-RoIAlign::~RoIAlign() {
-
-}
+RoIAlign::~RoIAlign() {}
 
 #define CHECK_CUDA(x) AT_CHECK(x.type().is_cuda(), #x, " must be a CUDAtensor ")
 #define CHECK_CONTIGUOUS(x) \
@@ -48,6 +44,3 @@ int RoIAlign::roi_align_forward_cuda(at::Tensor features, at::Tensor rois,
 
   return 1;
 }
-
-
-
